@@ -10,18 +10,18 @@
         <div class="tile is-child box">
           <div class="field">
             <label class="label" for="amount">Loan Amount</label>
-            <input class="input" type="text" placeholder="Loan Amount" v-model="state.amount" id="amount" name="amount" />
+            <input class="input" type="text" placeholder="Loan Amount" v-model="state.amount" id="amount" @change="setDirty" name="amount" />
           </div>
           <div class="field">
             <label class="label" for="amount">Duration (Months)</label>
-            <input class="input" type="text" placeholder="Duration" v-model="state.months" id="months" name="months" />
+            <input class="input" type="text" placeholder="Duration" v-model="state.months" id="months" @change="setDirty" name="months" />
           </div>
           <div class="field">
             <label class="label" for="amount">Interest (%)</label>
-            <input class="input" type="text" placeholder="Interest Rate" v-model="state.interest" id="interest" name="interest" />
+            <input class="input" type="text" placeholder="Interest Rate" v-model="state.interest" id="interest" @change="setDirty" name="interest" />
           </div>
           <div class="control">
-            <button class="button is-link" @click="calcTable">Calculate</button>
+            <button class="button is-link" @click="calcTable">Show/Hide Amortization Schedule</button>
           </div>
         </div>
       </div>
@@ -80,11 +80,30 @@ export default {
       filteredTotalCost: computed(() => currencyFilter(state.totalCost)),
       totalInterest: computed(() => Number(state.totalCost - state.amount)),
       filteredTotalInterest: computed(() => currencyFilter(state.totalInterest)),
-      payData: []
+      payData: [],
+      calcToggle: false,
+      dirty: false
     })
+    const setDirty = () => {
+      state.dirty = true
+    }
     const calcTable = () => {
-      let runningBalance = state.amount
+      if (state.dirty) {
+        doCalc()
+      } else {
+        state.calcToggle = !state.calcToggle
+        if (state.calcToggle) {
+          doCalc()
+        } else {
+          state.payData = []
+        }
+      } 
+    }
+    const doCalc = () => {
+      state.dirty = false
+      state.calcToggle = true
       state.payData = []
+      let runningBalance = state.amount
       for (var i=1; i<=state.months; i++) {
         let interestAmount = (((state.interest * 0.01) / 12) * runningBalance)
         let newBalance = runningBalance - (state.monthlyPayment - interestAmount)
@@ -122,7 +141,7 @@ export default {
         _int.slice(i).replace(digitsRE, '$1,') +
         _float
     }
-    return { state, calcTable }
+    return { state, calcTable, setDirty }
   }
 
 }
