@@ -1,6 +1,10 @@
 <template>
   <div class="container is-fluid">
-    <div class="title">Loan Calculator</div>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <div class="title has-text-centered">Vue 3 Loan Calculator</div>
+      </div>
+    </nav>
     <div class="tile is-ancestor">
       <div class="tile is-parent is-vertical is-4">
         <div class="tile is-child box">
@@ -23,6 +27,7 @@
       </div>
       <div class="tile is-parent is-vertical is-4">
         <div class="tile is-child box">
+          <div class="title has-text-centered">Loan Totals</div>
           <label class="label">Monthly Payment</label>{{ state.filteredMonthlyPayment }}
           <label class="label">Total Cost</label>{{ state.filteredTotalCost }}
           <label class="label">Total Interest</label>{{ state.filteredTotalInterest }}
@@ -95,7 +100,6 @@ export default {
         state.payData.push(paymentInfo)
         runningBalance = newBalance
       }
-      console.log(state.payData)
     }
     function currencyFilter (value, currency, decimals) {
       value = parseFloat(value)
